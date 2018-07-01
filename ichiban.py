@@ -42,7 +42,9 @@ class Ichiban:
         >>> Ichiban(A=1, B=9).kuji('A')
         10.0
         """
-        return 100 * sum(self.atari(*hit).values()) / sum(self.nokori.values())
+        atari_list = self.atari(*hit).values()
+        nokori_list = self.nokori.values()
+        return 100 * sum(atari_list) / sum(nokori_list)
 
     def all(self):
         """残りくじの数
