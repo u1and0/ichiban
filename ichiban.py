@@ -69,6 +69,19 @@ class Ichiban:
         """
         return sum(self.nokori.values())
 
+    def describe(self, *args):
+        """各景品を引く確率
+        >>> ich = Ichiban(A=1, B=9, C=90)
+        >>> ich.describe()
+        {'A': 0.01, 'B': 0.09, 'C': 0.9}
+        >>> ich.describe('A', 'C')
+        {'A': 0.01, 'C': 0.9}
+        """
+        dic = {i: self.nokori[i] for i in args}\
+            if args else self.nokori.copy()
+        describe_dict = {k: v / self.all() for k, v in dic.items()}
+        return describe_dict
+
 
 if __name__ == '__main__':
     import doctest
