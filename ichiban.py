@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+from collections import UserDict
 
 
 class Ichiban:
@@ -81,6 +82,64 @@ class Ichiban:
             if args else self.nokori.copy()
         describe_dict = {k: v / self.all() for k, v in dic.items()}
         return describe_dict
+
+
+class CalDict(UserDict):
+    """Caluculatable dictionary with operator
+    usage:
+        >>> cdict = CalDict(a=1, b=5, c=15)
+        >>> cdict + 5
+        {'a': 6, 'b': 10, 'c': 20}
+        >>> cdict - 5
+        {'a': -4, 'b': 0, 'c': 10}
+        >>> cdict * 5
+        {'a': 5, 'b': 25, 'c': 75}
+        >>> cdict / 5
+        {'a': 0.2, 'b': 1.0, 'c': 3.0}
+        >>> cdict // 5
+        {'a': 0, 'b': 1, 'c': 3}
+        >>> cdict % 5
+        {'a': 1, 'b': 0, 'c': 0}
+        >>> cdict ** 5
+        {'a': 1, 'b': 3125, 'c': 759375}
+        >>> -cdict
+        {'a': -1, 'b': -5, 'c': -15}
+
+        # self add
+        >>> cdict = CalDict(a=1, b=5, c=15)
+        >>> cdict += 5
+        >>> cdict
+        {'a': 6, 'b': 10, 'c': 20}
+        >>> type(cdict)
+        <class '__main__.CalDict'>
+    """
+
+    def __init__(self, **kwargs):
+        super().__init__(self, **kwargs)
+
+    def __add__(self, value):
+        return CalDict(**{k: v + value for k, v in self.items()})
+
+    def __sub__(self, value):
+        return CalDict(**{k: v - value for k, v in self.items()})
+
+    def __mul__(self, value):
+        return CalDict(**{k: v * value for k, v in self.items()})
+
+    def __truediv__(self, value):
+        return CalDict(**{k: v / value for k, v in self.items()})
+
+    def __floordiv__(self, value):
+        return CalDict(**{k: v // value for k, v in self.items()})
+
+    def __mod__(self, value):
+        return CalDict(**{k: v % value for k, v in self.items()})
+
+    def __pow__(self, value):
+        return CalDict(**{k: v**value for k, v in self.items()})
+
+    def __neg__(self):
+        return CalDict(**{k: -v for k, v in self.items()})
 
 
 if __name__ == '__main__':
