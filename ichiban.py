@@ -13,8 +13,8 @@ class Ichiban:
 
         # A,B,C,D賞がそれぞれ1,9,90,100個残っているくじの計算
         >>> ich = Ichiban(A=1, B=9, C=90, D=100)
-        >>> ich.atari('A', 'B', 'C')  # 当たり景品
-        {'A': 1, 'B': 9, 'C': 90}
+        >>> ich.hosii('A', 'B')  # 当たり景品
+        {'A': 1, 'B': 9}
         >>> ich.all()  # 景品の全数
         200
 
@@ -25,25 +25,40 @@ class Ichiban:
 
     def __init__(self, title=None, **remain):
         """remain: 残り景品とその数
-        >>> Ichiban(S=1, A=2, B=2).nokori
+        >>> Ichiban(S=1, A=2, B=2).nokori  # 残り景品
         {'S': 1, 'A': 2, 'B': 2}
         """
         self.title = title
         self.nokori = remain
+        self.atari = None
+        self.hazure = None
 
-    def atari(self, *hit):
+    def hosii(self, *hit):
         """hit: 当たりくじ
-        >>> Ichiban(A=1, B=9, C=90).atari('A', 'B')
+        >>> ich = Ichiban(A=1, B=9, C=90)
+        >>> ich.atari is None
+        True
+        >>> ich.hazure is None
+        True
+        >>> ich.hosii('A', 'B')  # 欲しい景品
         {'A': 1, 'B': 9}
+        >>> ich.atari
+        {'A': 1, 'B': 9}
+        >>> ich.hazure
+        {'C': 90}
         """
-        return {h: self.nokori[h] for h in hit}
+        self.atari = {h: self.nokori[h] for h in hit}
+        self.hazure = self.nokori.copy()
+        for k in hit:
+            self.hazure.pop(k)
+        return self.atari
 
     def kuji(self, *hit):
         """当たりくじを引く確率
         >>> Ichiban(A=1, B=9).kuji('A')
         10.0
         """
-        atari_list = self.atari(*hit).values()
+        atari_list = self.hosii(*hit).values()
         nokori_list = self.nokori.values()
         return 100 * sum(atari_list) / sum(nokori_list)
 
