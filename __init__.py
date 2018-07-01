@@ -1,1 +1,1 @@
-from .ichiban import kuji
+from .ichiban import Ichiban
