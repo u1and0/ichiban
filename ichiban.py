@@ -23,11 +23,12 @@ class Ichiban:
         remain: 現在余っている景品とその数
     """
 
-    def __init__(self, **remain):
+    def __init__(self, title=None, **remain):
         """remain: 残り景品とその数
         >>> Ichiban(S=1, A=2, B=2).nokori
         {'S': 1, 'A': 2, 'B': 2}
         """
+        self.title = title
         self.nokori = remain
 
     def atari(self, *hit):
