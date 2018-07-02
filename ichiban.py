@@ -115,6 +115,13 @@ class CalDict(UserDict):
         {'a': 6, 'b': 10, 'c': 20}
         >>> type(cdict)
         <class '__main__.CalDict'>
+
+        # slice
+        >>> cdic = CalDict(a=1, b=5, c=15)
+        >>> cdic['a']  # normal slice
+        1
+        >>> cdic['a','c']  # multiple slice
+        {'a': 1, 'c': 15}
     """
 
     def __init__(self, **kwargs):
@@ -143,6 +150,12 @@ class CalDict(UserDict):
 
     def __neg__(self):
         return CalDict(**{k: -v for k, v in self.items()})
+
+    def __getitem__(self, key):
+        if len(key) < 2:
+            return self.data[key]
+        else:
+            return CalDict(**{i: self.data[i] for i in key})
 
 
 if __name__ == '__main__':
