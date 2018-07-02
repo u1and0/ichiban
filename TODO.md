@@ -20,5 +20,6 @@
     if len(value) > 1:
         return {self[i] + value[i] for i in self.keys()}
     ```
+    * 実装はしたがエレメントが完全でないと足し算できない
 * インターフェース
     * スマホから計算
