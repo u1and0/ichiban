@@ -122,6 +122,13 @@ class CalDict(UserDict):
         1
         >>> cdic['a','c']  # multiple slice
         {'a': 1, 'c': 15}
+
+        # sum
+        >>> cdic = CalDict(a=1, b=5, c=15)
+        >>> cdic.sum()
+        21
+        >>> cdic['b', 'c'].sum()
+        20
     """
 
     def __init__(self, **kwargs):
@@ -156,6 +163,9 @@ class CalDict(UserDict):
             return self.data[key]
         else:
             return CalDict(**{i: self.data[i] for i in key})
+
+    def sum(self):
+        return sum(self.values())
 
 
 if __name__ == '__main__':
