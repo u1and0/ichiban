@@ -20,11 +20,5 @@
     if len(value) > 1:
         return {self[i] + value[i] for i in self.keys()}
     ```
-    * sumメソッド
-        * すべての要素を足し合わせる
-        ```
-        def sum(self):
-            sum(self.values())
-        ```
 * インターフェース
     * スマホから計算
