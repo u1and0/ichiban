@@ -116,18 +116,24 @@ class CalDict(UserDict):
         >>> type(cdict)
         <class '__main__.CalDict'>
 
+        # element add
+        >>> cdict = CalDict(a=1, b=5, c=15)
+        >>> bdict = cdict - 9
+        >>> cdict + bdict
+        {'a': -7, 'b': 1, 'c': 21}
+
         # slice
-        >>> cdic = CalDict(a=1, b=5, c=15)
-        >>> cdic['a']  # normal slice
+        >>> cdict = CalDict(a=1, b=5, c=15)
+        >>> cdict['a']  # normal slice
         1
-        >>> cdic['a','c']  # multiple slice
+        >>> cdict['a','c']  # multiple slice
         {'a': 1, 'c': 15}
 
         # sum
-        >>> cdic = CalDict(a=1, b=5, c=15)
-        >>> cdic.sum()
+        >>> cdict = CalDict(a=1, b=5, c=15)
+        >>> cdict.sum()
         21
-        >>> cdic['b', 'c'].sum()
+        >>> cdict['b', 'c'].sum()
         20
     """
 
@@ -135,7 +141,11 @@ class CalDict(UserDict):
         super().__init__(self, **kwargs)
 
     def __add__(self, value):
-        return CalDict(**{k: v + value for k, v in self.items()})
+        try:
+            if isinstance(value, dict) or isinstance(value.data, dict):
+                return CalDict(**{i: self[i] + value[i] for i in self.keys()})
+        except AttributeError:
+            return CalDict(**{k: v + value for k, v in self.items()})
 
     def __sub__(self, value):
         return CalDict(**{k: v - value for k, v in self.items()})
