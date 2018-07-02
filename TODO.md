@@ -11,5 +11,16 @@
         * Aを引く確率、 Bを引く確率...
     * plotメソッド
         * describeメソッドを棒グラフで表示
+    * next メソッド
+        * Ichiban.next() でどれかの要素の数字を1減らす
+        * Ichiban.next('A') で要素Aの数字を1減らす
+* CalDict
+    * 要素同士の計算
+    ```python
+    if len(value) > 1:
+        return {self[i] + value[i] for i in self.keys()}
+    ```
+    * sumメソッド
+        * すべての要素を足し合わせる
 * インターフェース
     * スマホから計算
