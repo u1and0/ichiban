@@ -30,7 +30,7 @@ class Ichiban:
         {'S': 1, 'A': 2, 'B': 2}
         """
         self.title = title
-        self.nokori = remain
+        self.nokori = CalDict(**remain)
         self.atari = None
         self.hazure = None
 
@@ -78,15 +78,18 @@ class Ichiban:
         >>> ich.describe('A', 'C')
         {'A': 0.01, 'C': 0.9}
         """
-        dic = {i: self.nokori[i] for i in args}\
-            if args else self.nokori.copy()
-        describe_dict = {k: v / self.all() for k, v in dic.items()}
+        if args:
+            dic = CalDict(**{i: self.nokori[i] for i in args})
+        else:
+            dic = self.nokori.copy()
+        describe_dict = dic / self.all()
         return describe_dict
 
 
 class CalDict(UserDict):
     """Caluculatable dictionary with operator
     usage:
+        # calculate
         >>> cdict = CalDict(a=1, b=5, c=15)
         >>> cdict + 5
         {'a': 6, 'b': 10, 'c': 20}
