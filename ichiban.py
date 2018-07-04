@@ -86,6 +86,17 @@ class Ichiban:
         return describe_dict
 
 
+def remove_zero(dic):
+    try:
+        for k in dic.keys():
+            if dic[k] <= 0:
+                dic.pop(k)
+    except RuntimeError:
+        pass
+    return dic
+
+
+@remove_zero
 class CalDict(UserDict):
     """Caluculatable dictionary with operator
     usage:
