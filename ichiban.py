@@ -108,20 +108,23 @@ class CalDict(UserDict):
         >>> -cdic
         {'a': -1, 'b': -5, 'c': -15}
 
-        # self add
+        # self calculate
         >>> cdic = CalDict(a=1, b=5, c=15)
-        >>> cdic += 5
+        >>> cdic -= 5
         >>> cdic
-        {'a': 6, 'b': 10, 'c': 20}
-        >>> type(cdic)
-        <class '__main__.CalDict'>
+        {'a': -4, 'b': 0, 'c': 10}
+
+        # reverse caluculate
+        >>> cdic = CalDict(a=2, b=5, c=10)
+        >>> 2 / cdic
+        {'a': 1.0, 'b': 0.4, 'c': 0.2}
 
         # element add
         >>> cdic = CalDict(a=1, b=-1, c=15)
         >>> bdic = CalDict(a=1, b=1, c=1)
         >>> cdic += bdic
-        >>> cdic
-        {'a': 2, 'b': 0, 'c': 16}  # all key
+        >>> cdic  # all key
+        {'a': 2, 'b': 0, 'c': 16}
         >>> cdic + {'a': 5, 'c':-5}  # particular keys
         {'a': 7, 'b': 0, 'c': 11}
 
@@ -131,6 +134,8 @@ class CalDict(UserDict):
         1
         >>> cdic['a','c']  # multiple slice
         {'a': 1, 'c': 15}
+        >>> list(cdic['a','c'].values())  # get list values
+        [1, 15]
 
         # sum
         >>> cdic = CalDict(a=1, b=5, c=15)
@@ -152,6 +157,15 @@ class CalDict(UserDict):
         except AttributeError:
             return CalDict(**{k: v + value for k, v in self.items()})
 
+    def __radd__(self, value):
+        try:
+            dic = self.copy()
+            if isinstance(value, dict) or isinstance(value.data, dict):
+                dic.update(**{i: value[i] + self[i] for i in value.keys()})
+                return dic
+        except AttributeError:
+            return CalDict(**{k: value + v for k, v in self.items()})
+
     def __sub__(self, value):
         try:
             dic = self.copy()
@@ -160,6 +174,15 @@ class CalDict(UserDict):
                 return dic
         except AttributeError:
             return CalDict(**{k: v - value for k, v in self.items()})
+
+    def __rsub__(self, value):
+        try:
+            dic = self.copy()
+            if isinstance(value, dict) or isinstance(value.data, dict):
+                dic.update(**{i: value[i] - self[i] for i in value.keys()})
+                return dic
+        except AttributeError:
+            return CalDict(**{k: value - v for k, v in self.items()})
 
     def __mul__(self, value):
         try:
@@ -170,6 +193,15 @@ class CalDict(UserDict):
         except AttributeError:
             return CalDict(**{k: v * value for k, v in self.items()})
 
+    def __rmul__(self, value):
+        try:
+            dic = self.copy()
+            if isinstance(value, dict) or isinstance(value.data, dict):
+                dic.update(**{i: value[i] * self[i] for i in value.keys()})
+                return dic
+        except AttributeError:
+            return CalDict(**{k: value * v for k, v in self.items()})
+
     def __truediv__(self, value):
         try:
             dic = self.copy()
@@ -178,6 +210,15 @@ class CalDict(UserDict):
                 return dic
         except AttributeError:
             return CalDict(**{k: v / value for k, v in self.items()})
+
+    def __rtruediv__(self, value):
+        try:
+            dic = self.copy()
+            if isinstance(value, dict) or isinstance(value.data, dict):
+                dic.update(**{i: value[i] / self[i] for i in value.keys()})
+                return dic
+        except AttributeError:
+            return CalDict(**{k: value / v for k, v in self.items()})
 
     def __floordiv__(self, value):
         try:
@@ -188,6 +229,15 @@ class CalDict(UserDict):
         except AttributeError:
             return CalDict(**{k: v // value for k, v in self.items()})
 
+    def __rfloordiv__(self, value):
+        try:
+            dic = self.copy()
+            if isinstance(value, dict) or isinstance(value.data, dict):
+                dic.update(**{i: value[i] // self[i] for i in value.keys()})
+                return dic
+        except AttributeError:
+            return CalDict(**{k: value // v for k, v in self.items()})
+
     def __mod__(self, value):
         try:
             dic = self.copy()
@@ -197,6 +247,15 @@ class CalDict(UserDict):
         except AttributeError:
             return CalDict(**{k: v % value for k, v in self.items()})
 
+    def __rmod__(self, value):
+        try:
+            dic = self.copy()
+            if isinstance(value, dict) or isinstance(value.data, dict):
+                dic.update(**{i: value[i] % self[i] for i in value.keys()})
+                return dic
+        except AttributeError:
+            return CalDict(**{k: value % v for k, v in self.items()})
+
     def __pow__(self, value):
         try:
             dic = self.copy()
@@ -205,6 +264,15 @@ class CalDict(UserDict):
                 return dic
         except AttributeError:
             return CalDict(**{k: v**value for k, v in self.items()})
+
+    def __rpow__(self, value):
+        try:
+            dic = self.copy()
+            if isinstance(value, dict) or isinstance(value.data, dict):
+                dic.update(**{i: value[i]**self[i] for i in value.keys()})
+                return dic
+        except AttributeError:
+            return CalDict(**{k: value**v for k, v in self.items()})
 
     def __neg__(self):
         return CalDict(**{k: -v for k, v in self.items()})
