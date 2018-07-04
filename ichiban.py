@@ -90,50 +90,53 @@ class CalDict(UserDict):
     """Caluculatable dictionary with operator
     usage:
         # calculate
-        >>> cdict = CalDict(a=1, b=5, c=15)
-        >>> cdict + 5
+        >>> cdic = CalDict(a=1, b=5, c=15)
+        >>> cdic + 5
         {'a': 6, 'b': 10, 'c': 20}
-        >>> cdict - 5
+        >>> cdic - 5
         {'a': -4, 'b': 0, 'c': 10}
-        >>> cdict * 5
+        >>> cdic * 5
         {'a': 5, 'b': 25, 'c': 75}
-        >>> cdict / 5
+        >>> cdic / 5
         {'a': 0.2, 'b': 1.0, 'c': 3.0}
-        >>> cdict // 5
+        >>> cdic // 5
         {'a': 0, 'b': 1, 'c': 3}
-        >>> cdict % 5
+        >>> cdic % 5
         {'a': 1, 'b': 0, 'c': 0}
-        >>> cdict ** 5
+        >>> cdic ** 5
         {'a': 1, 'b': 3125, 'c': 759375}
-        >>> -cdict
+        >>> -cdic
         {'a': -1, 'b': -5, 'c': -15}
 
         # self add
-        >>> cdict = CalDict(a=1, b=5, c=15)
-        >>> cdict += 5
-        >>> cdict
+        >>> cdic = CalDict(a=1, b=5, c=15)
+        >>> cdic += 5
+        >>> cdic
         {'a': 6, 'b': 10, 'c': 20}
-        >>> type(cdict)
+        >>> type(cdic)
         <class '__main__.CalDict'>
 
         # element add
-        >>> cdict = CalDict(a=1, b=5, c=15)
-        >>> bdict = cdict - 9
-        >>> cdict + bdict
-        {'a': -7, 'b': 1, 'c': 21}
+        >>> cdic = CalDict(a=1, b=-1, c=15)
+        >>> bdic = CalDict(a=1, b=1, c=1)
+        >>> cdic += bdic
+        >>> cdic
+        {'a': 2, 'b': 0, 'c': 16}  # all key
+        >>> cdic + {'a': 5, 'c':-5}  # particular keys
+        {'a': 7, 'b': 0, 'c': 11}
 
         # slice
-        >>> cdict = CalDict(a=1, b=5, c=15)
-        >>> cdict['a']  # normal slice
+        >>> cdic = CalDict(a=1, b=5, c=15)
+        >>> cdic['a']  # normal slice
         1
-        >>> cdict['a','c']  # multiple slice
+        >>> cdic['a','c']  # multiple slice
         {'a': 1, 'c': 15}
 
         # sum
-        >>> cdict = CalDict(a=1, b=5, c=15)
-        >>> cdict.sum()
+        >>> cdic = CalDict(a=1, b=5, c=15)
+        >>> cdic.sum()
         21
-        >>> cdict['b', 'c'].sum()
+        >>> cdic['b', 'c'].sum()
         20
     """
 
@@ -142,8 +145,10 @@ class CalDict(UserDict):
 
     def __add__(self, value):
         try:
+            dic = self.copy()
             if isinstance(value, dict) or isinstance(value.data, dict):
-                return CalDict(**{i: self[i] + value[i] for i in self.keys()})
+                dic.update(**{i: self[i] + value[i] for i in value.keys()})
+                return dic
         except AttributeError:
             return CalDict(**{k: v + value for k, v in self.items()})
 
