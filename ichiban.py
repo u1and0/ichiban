@@ -153,22 +153,58 @@ class CalDict(UserDict):
             return CalDict(**{k: v + value for k, v in self.items()})
 
     def __sub__(self, value):
-        return CalDict(**{k: v - value for k, v in self.items()})
+        try:
+            dic = self.copy()
+            if isinstance(value, dict) or isinstance(value.data, dict):
+                dic.update(**{i: self[i] - value[i] for i in value.keys()})
+                return dic
+        except AttributeError:
+            return CalDict(**{k: v - value for k, v in self.items()})
 
     def __mul__(self, value):
-        return CalDict(**{k: v * value for k, v in self.items()})
+        try:
+            dic = self.copy()
+            if isinstance(value, dict) or isinstance(value.data, dict):
+                dic.update(**{i: self[i] * value[i] for i in value.keys()})
+                return dic
+        except AttributeError:
+            return CalDict(**{k: v * value for k, v in self.items()})
 
     def __truediv__(self, value):
-        return CalDict(**{k: v / value for k, v in self.items()})
+        try:
+            dic = self.copy()
+            if isinstance(value, dict) or isinstance(value.data, dict):
+                dic.update(**{i: self[i] / value[i] for i in value.keys()})
+                return dic
+        except AttributeError:
+            return CalDict(**{k: v / value for k, v in self.items()})
 
     def __floordiv__(self, value):
-        return CalDict(**{k: v // value for k, v in self.items()})
+        try:
+            dic = self.copy()
+            if isinstance(value, dict) or isinstance(value.data, dict):
+                dic.update(**{i: self[i] // value[i] for i in value.keys()})
+                return dic
+        except AttributeError:
+            return CalDict(**{k: v // value for k, v in self.items()})
 
     def __mod__(self, value):
-        return CalDict(**{k: v % value for k, v in self.items()})
+        try:
+            dic = self.copy()
+            if isinstance(value, dict) or isinstance(value.data, dict):
+                dic.update(**{i: self[i] % value[i] for i in value.keys()})
+                return dic
+        except AttributeError:
+            return CalDict(**{k: v % value for k, v in self.items()})
 
     def __pow__(self, value):
-        return CalDict(**{k: v**value for k, v in self.items()})
+        try:
+            dic = self.copy()
+            if isinstance(value, dict) or isinstance(value.data, dict):
+                dic.update(**{i: self[i]**value[i] for i in value.keys()})
+                return dic
+        except AttributeError:
+            return CalDict(**{k: v**value for k, v in self.items()})
 
     def __neg__(self):
         return CalDict(**{k: -v for k, v in self.items()})
