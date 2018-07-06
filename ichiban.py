@@ -236,12 +236,11 @@ class Ichiban(CalDict):
         else:
             return self[keys] / self.sum()
 
-    def hiku(self, key):
+    def hiku(self, key=None):
         if not key:
-            key = random.choice(list(self.key()))
-        else:
-            self[key] -= 1
-        return self
+            key = random.choice(list(self.keys()))
+        self[key] -= 1
+        return key
 
     def kakaku(self, **values):
         kakaku_dic = self.kuji() * values
