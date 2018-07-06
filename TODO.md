@@ -14,12 +14,16 @@
     * next メソッド
         * Ichiban.next() でどれかの要素の数字を1減らす
         * Ichiban.next('A') で要素Aの数字を1減らす
-* CalDict
-    * 要素同士の計算
-    ```python
-    if len(value) > 1:
-        return {self[i] + value[i] for i in self.keys()}
-    ```
-    * 実装はしたがエレメントが完全でないと足し算できない
 * インターフェース
     * スマホから計算
+
+# Ichiban classテストケース
+>>> poke = Ichiban(A=1, B=2, C=2, D=15)
+>>> poke
+{'A': 1,'B': 2,'C': 2, 'D': 15}
+>>> poke.kuji()
+{'A': 1/20,'B': 2/20,'C': 2/20, 'D': 15/20}
+>>> poke.kuji('A', 'B')
+{'A': 1/20,'B': 2/20}
+>>> poke.kakaku('A', 'B')
+{'A': 1/20,'B': 2/20}
