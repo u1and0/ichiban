@@ -253,9 +253,22 @@ class Ichiban(CalDict):
             return self[keys] / self.sum()
 
     def hiku(self, key=None):
-        if not key:
-            key = random.choice(list(self.keys()))
-        self[key] -= 1
+        if key:
+            self[key] -= 1
+            if not self >= 0:
+                self[key] += 1
+                raise KeyError('{} is 0. Choose other key.'.format(key))
+        else:
+            while True:
+                key = random.choice(list(self.keys()))
+                self[key] -= 1
+                if self >= 0:
+                    break
+                elif self <= 0:
+                    self[key] += 1
+                    raise KeyError('All values are 0.')
+                else:
+                    self[key] += 1
         return key
 
     def kakaku(self, **values):
