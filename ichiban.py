@@ -24,6 +24,10 @@ class CalDict(UserDict):
         {'a': 1, 'b': 3125, 'c': 759375}
         >>> -cdic
         {'a': -1, 'b': -5, 'c': -15}
+        >>> cdic > 0
+        True
+        >>> -cdic <= -1
+        True
 
         # self calculate
         >>> cdic = CalDict(a=1, b=5, c=15)
@@ -194,6 +198,18 @@ class CalDict(UserDict):
     def __neg__(self):
         return CalDict(**{k: -v for k, v in self.items()})
 
+    def __gt__(self, value):
+        return all(i > value for i in self.values())
+
+    def __lt__(self, value):
+        return all(i < value for i in self.values())
+
+    def __ge__(self, value):
+        return all(i >= value for i in self.values())
+
+    def __le__(self, value):
+        return all(i <= value for i in self.values())
+
     def __getitem__(self, key):
         if len(key) < 2:
             return self.data[key]
@@ -214,12 +230,12 @@ class Ichiban(CalDict):
         {'A': 0.2, 'B': 0.4, 'C': 0.4}
         >>> poke.kuji('A', 'B')  # A賞, B賞を引くそれぞれの確率
         {'A': 0.2, 'B': 0.4}
-        >>> poke.kuji('A', 'B').sum()  # A賞またはB賞を引く確率
+        >>> round(poke.kuji('A', 'B').sum(), 1)  # A賞またはB賞を引く確率
         0.6
         >>> poke.kakaku(A=2000, B=1000, C=100)  # 期待値計算
         840.0
         >>> poke.hiku('A')  # A賞を引いて残数を1減らす(引数が無ければ景品ランダム)
-        {'A': 0, 'B': 2, 'C': 2}
+        'A'
         >>> poke.kuji()  # A賞を引いた後の確率
         {'A': 0.0, 'B': 0.5, 'C': 0.5}
 
