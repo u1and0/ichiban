@@ -1,116 +1,6 @@
 #!/usr/bin/env python3
 from collections import UserDict
-
-
-class Ichiban:
-    """一番くじ確率計算
-    usage:
-    ## NEW
-        >>> poke = Ichiban(A=1, B=2, C=2, D=15)  # 残り景品の数を入力
-
-        >>> poke  # 残り景品とその数
-        {'A': 1,'B': 2,'C': 2, 'D': 15}
-
-        >>> poke.kuji()  # くじを引く確率
-        {'A': 1/20,'B': 2/20,'C': 2/20, 'D': 15/20}
-
-        >>> poke.kuji('A', 'B')  # A,B賞を引く確率
-        {'A': 1/20,'B': 2/20}
-
-        >>> poke.kuji('A', 'B').sum()  # A,B賞を引く確率の合計
-        3/20
-
-        # この価格がくじを価格を上回ればくじを引く意義がある
-        # 1/20 * 2000 + 2/20 * 1000 + 2/20 * 100 + 0
-        >>> poke.kakaku(A=2000, B=1000, C=100, D=0)  # 期待値計算
-        210
-
-        >>> poke.hiku('A')  # A賞を引いて残りの数を1減らす(引数が無ければランダム)
-        {'A': 0,'B': 2,'C': 2, 'D': 15}
-
-        >>> poke.kuji()  # A賞を引いた後の確率
-        {'A': 0,'B': 2/19,'C': 2/19, 'D': 15/19}
-
-    ## OLD
-        # A賞が1個、B賞が9個残っているくじの計算
-        >>> ich = Ichiban(A=1, B=9)
-        >>> ich.nokori  # 残り景品とその数
-        {'A': 1, 'B': 9}
-        >>> ich.kuji('A')  # A賞を引く確率
-        10.0
-
-        # A,B,C,D賞がそれぞれ1,9,90,100個残っているくじの計算
-        >>> ich = Ichiban(A=1, B=9, C=90, D=100)
-        >>> ich.hosii('A', 'B')  # 当たり景品
-        {'A': 1, 'B': 9}
-        >>> ich.all()  # 景品の全数
-        200
-
-    args:
-        hit: 当たりくじの賞
-        remain: 現在余っている景品とその数
-    """
-
-    def __init__(self, title=None, **remain):
-        """remain: 残り景品とその数
-        >>> Ichiban(S=1, A=2, B=2).nokori  # 残り景品
-        {'S': 1, 'A': 2, 'B': 2}
-        """
-        self.title = title
-        self.nokori = CalDict(**remain)
-        self.atari = None
-        self.hazure = None
-
-    def hosii(self, *hit):
-        """hit: 当たりくじ
-        >>> ich = Ichiban(A=1, B=9, C=90)
-        >>> ich.atari is None
-        True
-        >>> ich.hazure is None
-        True
-        >>> ich.hosii('A', 'B')  # 欲しい景品
-        {'A': 1, 'B': 9}
-        >>> ich.atari
-        {'A': 1, 'B': 9}
-        >>> ich.hazure
-        {'C': 90}
-        """
-        self.atari = {h: self.nokori[h] for h in hit}
-        self.hazure = self.nokori.copy()
-        for k in hit:
-            self.hazure.pop(k)
-        return self.atari
-
-    def kuji(self, *hit):
-        """当たりくじを引く確率
-        >>> Ichiban(A=1, B=9).kuji('A')
-        10.0
-        """
-        atari_list = self.hosii(*hit).values()
-        nokori_list = self.nokori.values()
-        return 100 * sum(atari_list) / sum(nokori_list)
-
-    def all(self):
-        """残りくじの数
-        >>> Ichiban(S=1, A=2, B=2).all()
-        5
-        """
-        return sum(self.nokori.values())
-
-    def describe(self, *args):
-        """各景品を引く確率
-        >>> ich = Ichiban(A=1, B=9, C=90)
-        >>> ich.describe()
-        {'A': 0.01, 'B': 0.09, 'C': 0.9}
-        >>> ich.describe('A', 'C')
-        {'A': 0.01, 'C': 0.9}
-        """
-        if args:
-            dic = CalDict(**{i: self.nokori[i] for i in args})
-        else:
-            dic = self.nokori.copy()
-        describe_dict = dic / self.all()
-        return describe_dict
+import random
 
 
 class CalDict(UserDict):
@@ -312,6 +202,50 @@ class CalDict(UserDict):
 
     def sum(self):
         return sum(self.values())
+
+
+class Ichiban(CalDict):
+    """一番くじ確率計算
+    usage:
+        >>> poke = Ichiban(A=1, B=2, C=2)  # 残り景品の数を入力
+        >>> poke  # 残り景品とその数
+        {'A': 1, 'B': 2, 'C': 2}
+        >>> poke.kuji()  # くじを引く確率
+        {'A': 0.2, 'B': 0.4, 'C': 0.4}
+        >>> poke.kuji('A', 'B')  # A賞, B賞を引くそれぞれの確率
+        {'A': 0.2, 'B': 0.4}
+        >>> poke.kuji('A', 'B').sum()  # A賞またはB賞を引く確率
+        0.6
+        >>> poke.kakaku(A=2000, B=1000, C=100)  # 期待値計算
+        840.0
+        >>> poke.hiku('A')  # A賞を引いて残数を1減らす(引数が無ければ景品ランダム)
+        {'A': 0, 'B': 2, 'C': 2}
+        >>> poke.kuji()  # A賞を引いた後の確率
+        {'A': 0.0, 'B': 0.5, 'C': 0.5}
+
+    args:
+        remain: 現在余っている景品とその数
+    """
+
+    def __init__(self, **remain):
+        super().__init__(**remain)
+
+    def kuji(self, *keys):
+        if not keys:
+            return self / self.sum()
+        else:
+            return self[keys] / self.sum()
+
+    def hiku(self, key):
+        if not key:
+            key = random.choice(list(self.key()))
+        else:
+            self[key] -= 1
+        return self
+
+    def kakaku(self, **values):
+        kakaku_dic = self.kuji() * values
+        return kakaku_dic.sum()
 
 
 if __name__ == '__main__':
