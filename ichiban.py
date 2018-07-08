@@ -58,12 +58,18 @@ class CalDict(UserDict):
         >>> list(cdic['a','c'].values())  # get list values
         [1, 15]
 
-        # sum
+        # function map
         >>> cdic = CalDict(a=1, b=5, c=15)
-        >>> cdic.sum()
+        >>> cdic.max()  # same as `cdic.map(max)`
+        15
+        >>> cdic.sum()  # same as `cdic.map(sum)`
         21
-        >>> cdic['b', 'c'].sum()
-        20
+        >>> cdic['a', 'c'].map(sum)
+        16
+        >>> cdic.mean()  # same as `cdic.map(mean)`
+        7.0
+        >>> cdic.map(lambda x: x.max-x.min)
+        14
     """
 
     def __init__(self, **kwargs):
