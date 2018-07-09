@@ -71,7 +71,6 @@ class CalDict(UserDict):
         [1, 15]
 
         # function aggregate
-        >>> cdic = CalDict(a=1, b=5, c=15)
         >>> cdic.apply(lambda x: x**2)  # same as cdic.agg(...)
         {'a': 1, 'b': 25, 'c': 225}
         >>> cdic.apply(lambda x,y,z: x*y*z, 10, 0.5)  # same as cdic.agg(...)
@@ -80,6 +79,16 @@ class CalDict(UserDict):
         {'max': 15, 'min': 1}
         >>> cdic.agg(sum)  # cdic.apply(sum) is an error
         21
+
+        # stats
+        >>> cdic.max()
+        15
+        >>> cdic.min()
+        1
+        >>> cdic.sum()
+        21
+        >>> cdic.mean()
+        7.0
     """
 
     def __init__(self, **kwargs):
@@ -260,8 +269,21 @@ class CalDict(UserDict):
 
     agg = aggregate
 
+    def max(self):
+        """return max of values"""
+        return self.agg(max)
+
+    def min(self):
+        """return min of values"""
+        return self.agg(min)
+
     def sum(self):
-        return sum(self.values())
+        """return sum of values"""
+        return self.agg(sum)
+
+    def mean(self):
+        """return mean of values"""
+        return self.agg(sum) / len(self)
 
 
 class Ichiban(CalDict):
