@@ -26,6 +26,8 @@ class CalDict(UserDict):
         {'a': -1, 'b': -5, 'c': -15}
         >>> cdic > 0
         True
+        >>> cdic > 1
+        False
         >>> -cdic <= -1
         True
 
@@ -58,18 +60,16 @@ class CalDict(UserDict):
         >>> list(cdic['a','c'].values())  # get list values
         [1, 15]
 
-        # function map
+        # function aggregate
         >>> cdic = CalDict(a=1, b=5, c=15)
-        >>> cdic.max()  # same as `cdic.map(max)`
-        15
-        >>> cdic.sum()  # same as `cdic.map(sum)`
+        >>> cdic.apply(lambda x: x**2)
+        {'a': 1, 'b': 25, 'c': 225}
+        >>> cdic.apply(lambda x,y,z: x*y*z, 10, 0.5)
+        {'a': 5, 'b': 25, 'c': 75}
+        >>> cdic.apply(max,min)  # same as `cdic.aggregate(max)`
+        {'max': 15, 'min': 1}
+        >>> cdic.agg(sum)  # same as `cdic.aggregate(max)`
         21
-        >>> cdic['a', 'c'].map(sum)
-        16
-        >>> cdic.mean()  # same as `cdic.map(mean)`
-        7.0
-        >>> cdic.map(lambda x: x.max-x.min)
-        14
     """
 
     def __init__(self, **kwargs):
@@ -221,6 +221,21 @@ class CalDict(UserDict):
             return self.data[key]
         else:
             return CalDict(**{i: self.data[i] for i in key})
+
+    def apply(self, func, *args, **kwargs):
+        # if len(self)
+        return CalDict(
+            **{k: func(v, *args, **kwargs)
+               for k, v in self.items()})
+
+    def aggregate(self, func, *args, **kwargs):
+        try:
+            return self.apply(func, *args, **kwargs)
+        except (ValueError, AttributeError, TypeError):
+            return func(self.values(), *args, **kwargs)
+
+    def agg(self, func, *args, **kwargs):
+        return self.aggregate(func, *args, **kwargs)
 
     def sum(self):
         return sum(self.values())
