@@ -62,13 +62,13 @@ class CalDict(UserDict):
 
         # function aggregate
         >>> cdic = CalDict(a=1, b=5, c=15)
-        >>> cdic.apply(lambda x: x**2)
+        >>> cdic.apply(lambda x: x**2)  # same as cdic.agg(...)
         {'a': 1, 'b': 25, 'c': 225}
-        >>> cdic.apply(lambda x,y,z: x*y*z, 10, 0.5)
-        {'a': 5, 'b': 25, 'c': 75}
-        >>> cdic.apply(max,min)  # same as `cdic.aggregate(max)`
+        >>> cdic.apply(lambda x,y,z: x*y*z, 10, 0.5)  # same as cdic.agg(...)
+        {'a': 5.0, 'b': 25.0, 'c': 75.0}
+        >>> cdic.apply([max,min])  # same as cdic.agg(...)
         {'max': 15, 'min': 1}
-        >>> cdic.agg(sum)  # same as `cdic.aggregate(max)`
+        >>> cdic.agg(sum)  # cdic.apply(sum) is an error
         21
     """
 
@@ -223,19 +223,36 @@ class CalDict(UserDict):
             return CalDict(**{i: self.data[i] for i in key})
 
     def apply(self, func, *args, **kwargs):
-        # if len(self)
-        return CalDict(
-            **{k: func(v, *args, **kwargs)
-               for k, v in self.items()})
+        """ Invoke function on values of CalDict
+
+        usage:
+            cdic = CalDict(a=1, b=5, c=15)
+            cdic.apply(lambda x: x**2)  # same as cdic.agg(...)
+            cdic.apply([max,min])  # same as cdic.agg(...)
+        """
+        if isinstance(func, (list, tuple)):
+            return CalDict(
+                **{f.__name__: self.agg(f, *args, **kwargs)
+                   for f in func})
+        else:
+            return CalDict(
+                **{k: func(v, *args, **kwargs)
+                   for k, v in self.items()})
 
     def aggregate(self, func, *args, **kwargs):
+        """Using one or more operations over keys
+        agg is an alias of aggregate, use `agg`
+
+        usage:
+            cdic = CalDict(a=1, b=5, c=15)
+            cdic.agg(sum)  # cdic.apply(sum) is an error
+        """
         try:
             return self.apply(func, *args, **kwargs)
         except (ValueError, AttributeError, TypeError):
             return func(self.values(), *args, **kwargs)
 
-    def agg(self, func, *args, **kwargs):
-        return self.aggregate(func, *args, **kwargs)
+    agg = aggregate
 
     def sum(self):
         return sum(self.values())
