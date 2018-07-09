@@ -1,4 +1,14 @@
 #!/usr/bin/env python3
+"""
+# CalDict
+
+* Caluculatable dictionary with operator
+* python dictionary enhancement
+* inherit of UserDict
+
+# Ichiban
+Ichiban kuji simulator
+"""
 from collections import UserDict
 import random
 
@@ -80,7 +90,7 @@ class CalDict(UserDict):
             dic = self.copy()
             if isinstance(value, dict) or isinstance(value.data, dict):
                 dic.update(**{i: self[i] + value[i] for i in value.keys()})
-                return dic
+            return dic
         except AttributeError:
             return CalDict(**{k: v + value for k, v in self.items()})
 
@@ -89,7 +99,7 @@ class CalDict(UserDict):
             dic = self.copy()
             if isinstance(value, dict) or isinstance(value.data, dict):
                 dic.update(**{i: value[i] + self[i] for i in value.keys()})
-                return dic
+            return dic
         except AttributeError:
             return CalDict(**{k: value + v for k, v in self.items()})
 
@@ -98,7 +108,7 @@ class CalDict(UserDict):
             dic = self.copy()
             if isinstance(value, dict) or isinstance(value.data, dict):
                 dic.update(**{i: self[i] - value[i] for i in value.keys()})
-                return dic
+            return dic
         except AttributeError:
             return CalDict(**{k: v - value for k, v in self.items()})
 
@@ -107,7 +117,7 @@ class CalDict(UserDict):
             dic = self.copy()
             if isinstance(value, dict) or isinstance(value.data, dict):
                 dic.update(**{i: value[i] - self[i] for i in value.keys()})
-                return dic
+            return dic
         except AttributeError:
             return CalDict(**{k: value - v for k, v in self.items()})
 
@@ -116,7 +126,7 @@ class CalDict(UserDict):
             dic = self.copy()
             if isinstance(value, dict) or isinstance(value.data, dict):
                 dic.update(**{i: self[i] * value[i] for i in value.keys()})
-                return dic
+            return dic
         except AttributeError:
             return CalDict(**{k: v * value for k, v in self.items()})
 
@@ -125,7 +135,7 @@ class CalDict(UserDict):
             dic = self.copy()
             if isinstance(value, dict) or isinstance(value.data, dict):
                 dic.update(**{i: value[i] * self[i] for i in value.keys()})
-                return dic
+            return dic
         except AttributeError:
             return CalDict(**{k: value * v for k, v in self.items()})
 
@@ -134,7 +144,7 @@ class CalDict(UserDict):
             dic = self.copy()
             if isinstance(value, dict) or isinstance(value.data, dict):
                 dic.update(**{i: self[i] / value[i] for i in value.keys()})
-                return dic
+            return dic
         except AttributeError:
             return CalDict(**{k: v / value for k, v in self.items()})
 
@@ -143,7 +153,7 @@ class CalDict(UserDict):
             dic = self.copy()
             if isinstance(value, dict) or isinstance(value.data, dict):
                 dic.update(**{i: value[i] / self[i] for i in value.keys()})
-                return dic
+            return dic
         except AttributeError:
             return CalDict(**{k: value / v for k, v in self.items()})
 
@@ -152,7 +162,7 @@ class CalDict(UserDict):
             dic = self.copy()
             if isinstance(value, dict) or isinstance(value.data, dict):
                 dic.update(**{i: self[i] // value[i] for i in value.keys()})
-                return dic
+            return dic
         except AttributeError:
             return CalDict(**{k: v // value for k, v in self.items()})
 
@@ -161,7 +171,7 @@ class CalDict(UserDict):
             dic = self.copy()
             if isinstance(value, dict) or isinstance(value.data, dict):
                 dic.update(**{i: value[i] // self[i] for i in value.keys()})
-                return dic
+            return dic
         except AttributeError:
             return CalDict(**{k: value // v for k, v in self.items()})
 
@@ -170,7 +180,7 @@ class CalDict(UserDict):
             dic = self.copy()
             if isinstance(value, dict) or isinstance(value.data, dict):
                 dic.update(**{i: self[i] % value[i] for i in value.keys()})
-                return dic
+            return dic
         except AttributeError:
             return CalDict(**{k: v % value for k, v in self.items()})
 
@@ -179,7 +189,7 @@ class CalDict(UserDict):
             dic = self.copy()
             if isinstance(value, dict) or isinstance(value.data, dict):
                 dic.update(**{i: value[i] % self[i] for i in value.keys()})
-                return dic
+            return dic
         except AttributeError:
             return CalDict(**{k: value % v for k, v in self.items()})
 
@@ -188,7 +198,7 @@ class CalDict(UserDict):
             dic = self.copy()
             if isinstance(value, dict) or isinstance(value.data, dict):
                 dic.update(**{i: self[i]**value[i] for i in value.keys()})
-                return dic
+            return dic
         except AttributeError:
             return CalDict(**{k: v**value for k, v in self.items()})
 
@@ -197,7 +207,7 @@ class CalDict(UserDict):
             dic = self.copy()
             if isinstance(value, dict) or isinstance(value.data, dict):
                 dic.update(**{i: value[i]**self[i] for i in value.keys()})
-                return dic
+            return dic
         except AttributeError:
             return CalDict(**{k: value**v for k, v in self.items()})
 
@@ -219,14 +229,12 @@ class CalDict(UserDict):
     def __getitem__(self, key):
         if len(key) < 2:
             return self.data[key]
-        else:
-            return CalDict(**{i: self.data[i] for i in key})
+        return CalDict(**{i: self.data[i] for i in key})
 
     def apply(self, func, *args, **kwargs):
         """ Invoke function on values of CalDict
 
         usage:
-            cdic = CalDict(a=1, b=5, c=15)
             cdic.apply(lambda x: x**2)  # same as cdic.agg(...)
             cdic.apply([max,min])  # same as cdic.agg(...)
         """
@@ -234,17 +242,15 @@ class CalDict(UserDict):
             return CalDict(
                 **{f.__name__: self.agg(f, *args, **kwargs)
                    for f in func})
-        else:
-            return CalDict(
-                **{k: func(v, *args, **kwargs)
-                   for k, v in self.items()})
+        return CalDict(
+            **{k: func(v, *args, **kwargs)
+               for k, v in self.items()})
 
     def aggregate(self, func, *args, **kwargs):
         """Using one or more operations over keys
         agg is an alias of aggregate, use `agg`
 
         usage:
-            cdic = CalDict(a=1, b=5, c=15)
             cdic.agg(sum)  # cdic.apply(sum) is an error
         """
         try:
@@ -287,13 +293,12 @@ class Ichiban(CalDict):
     def kuji(self, *keys):
         if not keys:
             return self / self.sum()
-        else:
-            return self[keys] / self.sum()
+        return self[keys] / self.sum()
 
     def hiku(self, key=None):
         if key:
             self[key] -= 1
-            if not self >= 0:
+            if self < 0:
                 self[key] += 1
                 raise KeyError('{} is 0. Choose other key.'.format(key))
         else:
