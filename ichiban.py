@@ -325,7 +325,7 @@ class Ichiban(CalDict):
             while True:
                 key = random.choice(list(self.keys()))
                 self[key] -= 1
-                if self >= 0:
+                if self > 0:
                     break
                 elif self <= 0:
                     self[key] += 1
