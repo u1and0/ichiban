@@ -70,17 +70,19 @@ class CalDict(UserDict):
         >>> list(cdic['a','c'].values())  # get list values
         [1, 15]
 
-        # function aggregate
-        >>> cdic.apply(lambda x: x**2)  # same as cdic.agg(...)
-        {'a': 1, 'b': 25, 'c': 225}
-        >>> cdic.apply(lambda x,y,z: x*y*z, 10, 0.5)  # same as cdic.agg(...)
-        {'a': 5.0, 'b': 25.0, 'c': 75.0}
-        >>> cdic.apply([max,min])  # same as cdic.agg(...)
-        {'max': 15, 'min': 1}
-        >>> cdic.agg(sum)  # cdic.apply(sum) is an error
+        # function apply
+        >>> cdic = CalDict(a=1, b=5, c=15)
+        >>> cdic.apply(sum)
         21
+        >>> cdic.apply(lambda x: x**2)
+        {'a': 1, 'b': 25, 'c': 225}
+        >>> cdic.apply(lambda x,y,z: x*y*z, 10, 0.5)
+        {'a': 5.0, 'b': 25.0, 'c': 75.0}
+        >>> cdic.apply([max,min])
+        {'max': 15, 'min': 1}
 
         # stats
+        >>> cdic = CalDict(a=1, b=5, c=15)
         >>> cdic.max()
         15
         >>> cdic.min()
@@ -241,49 +243,45 @@ class CalDict(UserDict):
         return CalDict(**{i: self.data[i] for i in key})
 
     def apply(self, func, *args, **kwargs):
-        """ Invoke function on values of CalDict
-
+        """Using one or more operations over keys
         usage:
-            cdic.apply(lambda x: x**2)  # same as cdic.agg(...)
-            cdic.apply([max,min])  # same as cdic.agg(...)
+            cdic = CalDict(a=1, b=5, c=15)
+            cdic.apply(sum)
+            21
+            cdic.apply(lambda x: x**2)
+            {'a': 1, 'b': 25, 'c': 225}
+            cdic.apply(lambda x,y,z: x*y*z, 10, 0.5)
+            {'a': 5.0, 'b': 25.0, 'c': 75.0}
+            cdic.apply([max,min])
+            {'max': 15, 'min': 1}
         """
         if isinstance(func, (list, tuple)):
             return CalDict(
-                **{f.__name__: self.agg(f, *args, **kwargs)
+                **{f.__name__: self.apply(f, *args, **kwargs)
                    for f in func})
-        return CalDict(
-            **{k: func(v, *args, **kwargs)
-               for k, v in self.items()})
-
-    def aggregate(self, func, *args, **kwargs):
-        """Using one or more operations over keys
-        agg is an alias of aggregate, use `agg`
-
-        usage:
-            cdic.agg(sum)  # cdic.apply(sum) is an error
-        """
-        try:
-            return self.apply(func, *args, **kwargs)
-        except (ValueError, AttributeError, TypeError):
-            return func(self.values(), *args, **kwargs)
-
-    agg = aggregate
+        else:
+            try:
+                return CalDict(
+                    **{k: func(v, *args, **kwargs)
+                       for k, v in self.items()})
+            except (ValueError, AttributeError, TypeError):
+                return func(self.values(), *args, **kwargs)
 
     def max(self):
         """return max of values"""
-        return self.agg(max)
+        return self.apply(max)
 
     def min(self):
         """return min of values"""
-        return self.agg(min)
+        return self.apply(min)
 
     def sum(self):
         """return sum of values"""
-        return self.agg(sum)
+        return self.apply(sum)
 
     def mean(self):
         """return mean of values"""
-        return self.agg(sum) / len(self)
+        return self.apply(sum) / len(self)
 
 
 class Ichiban(CalDict):
