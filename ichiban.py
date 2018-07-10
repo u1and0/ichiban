@@ -311,11 +311,18 @@ class Ichiban(CalDict):
         super().__init__(**remain)
 
     def kuji(self, *keys):
+        """景品を引く確率計算"""
         if not keys:
             return self / self.sum()
         return self[keys] / self.sum()
 
+    def kakaku(self, **values):
+        """期待値計算"""
+        kakaku_dic = self.kuji() * values
+        return kakaku_dic.sum()
+
     def hiku(self, key=None):
+        """くじ引きシミュレート"""
         if key:
             self[key] -= 1
             if self < 0:
@@ -333,10 +340,6 @@ class Ichiban(CalDict):
                 else:
                     self[key] += 1
         return key
-
-    def kakaku(self, **values):
-        kakaku_dic = self.kuji() * values
-        return kakaku_dic.sum()
 
 
 if __name__ == '__main__':
