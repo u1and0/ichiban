@@ -9,6 +9,22 @@ import random
 
 class Ichiban(UserList):
     """一番くじ確率計算
+    description:
+        args:
+            remain: 現在余っている景品とその数
+        self.data:
+            インスタンスの実態を表すリスト型
+        self.dict():
+            dict typeとして返す。valuesは個数
+        self.__repr__():
+            インスタンスを打った時にdictのように表示する
+            (注意！インスタンスの実態はself.data<-リスト型)
+        self.kuji(*keys):
+            景品を引く確率計算
+        self.kakaku(default=0, **val):
+            期待値計算
+        self.hiku(key=None):
+            くじ引きシミュレート
     usage:
         >>> poke = Ichiban(A=1, B=2, C=2)  # 残り景品の数を入力
         >>> poke.data  # 残り景品
@@ -43,21 +59,6 @@ class Ichiban(UserList):
         {'B': 0.5, 'C': 0.5}
         >>> len(poke)  # A賞を引いた後の全数は1減っている
         4
-
-    args: remain:
-        現在余っている景品とその数
-    self.data:
-        リスト型 (__repr__では辞書型に見えるが、メソッドはリスト型を継承)
-    self.dict():
-        dict typeとして返す。valuesは個数
-    self.__repr__():
-        インスタンスを打った時にdictのように表示する(注意！実態はリスト型)
-    self.kuji(self, *keys):
-        景品を引く確率計算
-    self.kakaku(self, default=0, **val):
-        期待値計算
-    self.hiku(self, key=None):
-        くじ引きシミュレート
     """
 
     def __init__(self, **remain):
@@ -85,14 +86,16 @@ class Ichiban(UserList):
             >> poke.kuji('A', 'B')  # A賞またはB賞を引く確率
             0.6
         """
+        # float type
         if keys:
-            return sum([self.count(k) for k in set(keys)]) / len(self)  # float type
-        return {k: self.count(k) / len(self) for k in self}  # dict type
+            return sum([self.count(k) for k in set(keys)]) / len(self)
+        # dict type
+        return {k: self.count(k) / len(self) for k in self}
 
     def kakaku(self, default=0, **val):
         """期待値計算
         descripton:
-            景品の価格を引数に取り、「価格x確率」の合計値を返す
+            景品の価格を引数に取り、[価格x確率]の合計値を返す
         usage:
             >> poke = Ichiban(A=1, B=2, C=2)  # 残り景品の数を入力
             >> poke.kakaku(A=2000, B=1000, C=100)  # A賞2000円、B賞1000円、C賞100円の価値
@@ -127,6 +130,7 @@ class Ichiban(UserList):
         """
         index = self.index(key if key else random.choice(self))
         return self.pop(index)
+
 
 if __name__ == '__main__':
     import doctest
