@@ -7,6 +7,12 @@ from collections import UserList
 import random
 
 
+def sumup_list(li: list) -> dict:
+    """ count duplication of list elements and return dictionary"""
+    uniq_list = sorted(list(set(li)))
+    return {k: li.count(k) for k in uniq_list}
+
+
 class Ichiban(UserList):
     """一番くじ確率計算
     description:
@@ -67,11 +73,10 @@ class Ichiban(UserList):
 
     def dict(self):
         """return dict type data"""
-        uniq_list = sorted(list(set(self)))
-        return {k: self.count(k) for k in uniq_list}
+        return sumup_list(self)
 
     def __repr__(self):
-        return self.dict().__repr__()
+        return sumup_list(self).__repr__()
 
     def copy(self):
         return self.__class__(**self.dict())
