@@ -73,6 +73,9 @@ class Ichiban(UserList):
     def __repr__(self):
         return self.dict().__repr__()
 
+    def copy(self):
+        return self.__class__(**self.dict())
+
     def kuji(self, *keys):
         """景品を引く確率計算
         description:
