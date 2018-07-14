@@ -1,8 +1,5 @@
 #!/usr/bin/env python3
-"""
-# Ichiban
-Ichiban kuji simulator
-"""
+"""Ichiban kuji simulator"""
 from collections import UserList
 import random
 
